@@ -14,6 +14,9 @@ import re
 import random
 import time
 import datetime
+import qianfan
+import json
+import os
 
 def shuffleDict(d):
   keys = list(d.keys())
@@ -107,9 +110,23 @@ def decoder_for_gpt3_5(arg,input, max_length):
     openai.api_key = ""
     #openai.api_key = "sk-proj-g5iTr62tF5V1qD79uVq2T3BlbkFJnvwQe1eoVNMkCNoUte5U"
     response = openai.ChatCompletion.create(
+        #model="gpt-4.0",
         model="gpt-3.5-turbo-1106",
         messages=[{"role": "user", "content": prompt}])
     return response['choices'][0]['message']['content'].strip()
+
+def decoder_for_qianfan(arg,input, max_length):
+    prompt = input
+
+    os.environ["QIANFAN_ACCESS_KEY"] = ""
+    os.environ["QIANFAN_SECRET_KEY"] = ""
+    chat_comp = qianfan.ChatCompletion()
+
+    response = chat_comp.do(model="ERNIE-4.0-8K", messages=[{
+        "role": "user",
+        "content": prompt
+    }])
+    return response.get("result")
 
 
 class Decoder():
